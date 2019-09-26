@@ -3,6 +3,7 @@ package com.berserk.animeRESTConsume.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,5 +42,17 @@ public class ServiceControllerTest {
 		.andDo(print())
 		.andExpect(status().isOk());
 	}
+	
+	@Test
+	public void givenJson_whenProcessJson_thenExpectFalse() throws Exception {
+		final String RESOURCE_LOCATION = "/init/animelist";
+		Mockito.when(animeService.processJson("")).thenReturn(false);
 
+		mockMvc
+		.perform(
+				get(RESOURCE_LOCATION)
+				.accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(content().string("false"));
+	}
 }
