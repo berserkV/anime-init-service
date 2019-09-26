@@ -1,6 +1,13 @@
 spring:
+  profiles:
+    active:
+    - local
+
+---
+spring:
+  profiles: local
   datasource:
-    url: jdbc:postgresql://postgres:5432/anime
+    url: jdbc:postgresql://localhost:5432/anime
     username: diego
     password: 123456
     driver-class-name: org.postgresql.Driver
@@ -8,5 +15,18 @@ spring:
     hibernate:
       ddl-auto: create
     generate-ddl: true
-    show-sql: true 
-    
+    show-sql: true
+
+---
+spring:
+  profiles: docker
+  datasource:
+    url: jdbc:postgresql://postgres:5433/anime
+    username: diego
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
