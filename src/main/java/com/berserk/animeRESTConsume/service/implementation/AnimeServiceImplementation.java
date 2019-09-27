@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.berserk.animeRESTConsume.model.Anime;
@@ -18,12 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service("animeService")
 public class AnimeServiceImplementation implements AnimeService {
-	
-	@Autowired
-	@Qualifier("animeRepository")
+
+//	@Autowired
+//	@Qualifier("animeRepository")
 	AnimeRepository animeRepository;
 	private static final Logger LOGGER = Logger.getLogger(AnimeServiceImplementation.class);
-
+	
+	public AnimeServiceImplementation(AnimeRepository animeRepository) {
+		this.animeRepository = animeRepository;
+	}
+	
 	@Override
 	public boolean processJson(String json) {
 		LOGGER.info("Processing json -> " + json);
@@ -39,16 +41,12 @@ public class AnimeServiceImplementation implements AnimeService {
 		}
 		List<Anime> myAnimeList = myAnimeContainer.getMyList();
 		if (myAnimeList != null && !myAnimeList.isEmpty()) {
-			save(myAnimeList);
+//			animeRepository.saveAll(myAnimeList);
+			myAnimeList.stream().map(animeRepository::save);
 			result = true;
 		} else {
 			result = false;
 		}
 		return result;
-	}
-
-	@Override
-	public boolean save(List<Anime> myAnimeList) {
-		return animeRepository.saveAll(myAnimeList) != null ? true :false;
 	}
 }
