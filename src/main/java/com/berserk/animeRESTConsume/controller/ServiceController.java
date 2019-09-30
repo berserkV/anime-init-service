@@ -13,22 +13,25 @@ import com.berserk.animeRESTConsume.service.AnimeService;
 @RestController
 @RequestMapping("/init")
 public class ServiceController {
-	
-	@Autowired
-	@Qualifier("restTemplate")
-	RestTemplate restTemplate;
-	@Autowired
-	@Qualifier("animeService")
 	AnimeService animeService;
+	RestTemplate restTemplate;
 	
 	private static final Logger LOGGER = Logger.getLogger(ServiceController.class);
-	private static final String URL = "https://raw.githubusercontent.com/manami-project/anime-offline-database/master/anime-offline-database.json";
+	private static final String URL =
+			"https://raw.githubusercontent.com/manami-project/anime-offline-database/master/"
+			+"anime-offline-database.json";
 	
+	@Autowired
+	public ServiceController(@Qualifier("animeService") AnimeService animeService,
+			@Qualifier("resTemplate") RestTemplate restTemplate) {
+		this.animeService = animeService;
+		this.restTemplate = restTemplate;
+	}
+
 	@GetMapping("/animelist")
 	public String getAnimeFromAPI() {
 		LOGGER.info("Accesing to /api/animelist GET");
-		String myAnimeJson = restTemplate.getForObject(URL, String.class);
-		boolean success = animeService.processJson(myAnimeJson);
-		return String.valueOf(success);
+		String myAnimeJson = restTemplate.getForObject(URL, String.class); 
+		return String.valueOf(animeService.processJson(myAnimeJson));
 	}
 }

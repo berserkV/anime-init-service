@@ -2,35 +2,47 @@ package com.berserk.animeRESTConsume.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 
-import com.berserk.animeRESTConsume.AnimeRestConsumeApplication;
 import com.berserk.animeRESTConsume.service.AnimeService;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@RunWith(SpringRunner.class)
-@ContextConfiguration(classes = AnimeRestConsumeApplication.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 public class ServiceControllerTest {
 	
-	@Autowired
 	private MockMvc mockMvc;
+	
+	@InjectMocks
+	private ServiceController serviceController;
+	
 	@Mock
 	private AnimeService animeService;
+	
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		serviceController = new ServiceController(animeService, new RestTemplate());
+		mockMvc = MockMvcBuilders
+                .standaloneSetup(serviceController)
+                .build();
+		Mockito.reset(animeService);
+	}
 
 	@Test
 	public void givenJson_whenProcessJson_thenExpectOk() throws Exception {
