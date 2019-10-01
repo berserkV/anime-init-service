@@ -1,5 +1,6 @@
 package com.berserk.animeRESTConsume.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,33 +27,36 @@ public class AnimeService {
 		this.animeRepository = animeRepository;
 	}
 
-	public boolean processJson(String animeJson) {
+	public List<Anime> processJson(String animeJson) throws IOException {
 		//=============================
 		LOGGER.info("Processing json");
 		//=============================
+		ListContainer<Anime> myAnimeContainer = null;
+		myAnimeContainer = readValueFromJson(animeJson);
+		List<Anime> myAnimes = myAnimeContainer.getMyList();
+		if (myAnimes == null || myAnimes.isEmpty()) { 
+			//==============================================
+			LOGGER.error("Anime list may be null or empty");
+			//==============================================
+			throw new IOException("Cannot deserialize json");
+		}
+		return myAnimes;
+	}
+
+	private ListContainer<Anime> readValueFromJson(String animeJson) {
+		ListContainer<Anime> myAnimeContainer;
 		ObjectMapper objectMapper = new ObjectMapper()
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		ListContainer<Anime> myAnimeContainer = null;
-		boolean result = false;
 		try {
 			myAnimeContainer = objectMapper.readValue(animeJson, new TypeReference<ListContainer<Anime>>() {});
 		} catch (Exception e) {
 			e.printStackTrace();
 			myAnimeContainer = new ListContainer<>(new ArrayList<>());
 		}
-		List<Anime> myAnimes = myAnimeContainer.getMyList();
-		if (myAnimes != null && !myAnimes.isEmpty()) {
-			result = true;
-		} else {
-			//==============================================
-			LOGGER.error("Anime list may be null or empty");
-			//==============================================
-			result = false;
-		}
-		return result;
+		return myAnimeContainer;
 	}
 
-	public void saveJson(List<Anime> myAnimes) {
+	public void save(List<Anime> myAnimes) {
 		//========================================================
 		LOGGER.info("Persisting: " + myAnimes.size() + " animes");
 		//========================================================

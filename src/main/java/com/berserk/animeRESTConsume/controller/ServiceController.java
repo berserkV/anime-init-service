@@ -1,5 +1,8 @@
 package com.berserk.animeRESTConsume.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.berserk.animeRESTConsume.model.Anime;
 import com.berserk.animeRESTConsume.service.AnimeService;
 
 @RestController
@@ -29,9 +33,9 @@ public class ServiceController {
 	}
 
 	@GetMapping("/animelist")
-	public String getAnimeFromAPI() {
+	public List<Anime> getAnimeFromAPI() throws IOException {
 		LOGGER.info("Accesing to /api/animelist GET");
 		String myAnimeJson = restTemplate.getForObject(URL, String.class); 
-		return String.valueOf(animeService.processJson(myAnimeJson));
+		return animeService.processJson(myAnimeJson);
 	}
 }
