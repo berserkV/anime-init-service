@@ -34,9 +34,9 @@ public class AnimeService {
 		ListContainer<Anime> myAnimeContainer = null;
 		myAnimeContainer = readValueFromJson(animeJson);
 		List<Anime> myAnimes = myAnimeContainer.getMyList();
-		if (myAnimes == null || myAnimes.isEmpty()) { 
+		if (myAnimes == null) { 
 			//==============================================
-			LOGGER.error("Anime list may be null or empty");
+			LOGGER.error("Anime list null");
 			//==============================================
 			throw new IOException("Cannot deserialize json");
 		}

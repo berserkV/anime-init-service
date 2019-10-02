@@ -1,16 +1,22 @@
 package com.berserk.animeRESTConsume.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.berserk.animeRESTConsume.model.Anime;
@@ -18,6 +24,7 @@ import com.berserk.animeRESTConsume.model.ListContainer;
 import com.berserk.animeRESTConsume.repository.AnimeRepository;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(AnimeService.class)
 public class AnimeServiceTest {
 	
 	@Mock
@@ -29,8 +36,7 @@ public class AnimeServiceTest {
 	@Before
 	public void setUp() {
 		repository = Mockito.mock(AnimeRepository.class);
-		service = new AnimeService(repository);
-		
+		service = PowerMockito.spy(new AnimeService(repository));
 		json = "{\r\n" + 
 				"    \"data\": [\r\n" + 
 				"        {\r\n" + 
@@ -56,9 +62,7 @@ public class AnimeServiceTest {
 	
 	@Test
 	public void givenJson_whenProcessJson_thenReturnAnimeList() throws Exception {
-		AnimeService spy = PowerMockito.spy(PowerMockito.mock(AnimeService.class));
-		
-		PowerMockito.when(spy, "readValueFromJson", json).thenReturn(
+		PowerMockito.when(service, "readValueFromJson", json).thenReturn(
 				new ListContainer<>(new ArrayList<>(
 						Arrays.asList(new Anime(
 								1L, 
@@ -72,5 +76,36 @@ public class AnimeServiceTest {
 								new ArrayList<>())))));
 		
 		assertEquals("One piece", service.processJson(json).get(0).getTitle());
+	}
+	
+	@Test
+	public void givenJson_whenProcessJson_thenReturnEmptyList() throws Exception {
+		PowerMockito.when(service, "readValueFromJson", json)
+				.thenReturn(new ListContainer<>(new ArrayList<>()));
+		
+		List<Anime> myActuals = service.processJson(json);
+		
+		assertTrue(myActuals.isEmpty());
+	}
+	
+	@Test
+	public void givenAnimeList_whenSave_verifyIfListWasPersisted() {
+		List<Anime> myAnimes = new ArrayList<>(
+				Arrays.asList(new Anime(
+						1L, 
+						null, 
+						"TV", 
+						"One piece", 
+						null, 
+						null, 
+						null, 
+						958, 
+						new ArrayList<>())));
+		
+		when(repository.save(ArgumentMatchers.any(Anime.class))).thenReturn(myAnimes.get(0));
+		when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(myAnimes.get(0)));
+		
+		service.save(myAnimes);
+		assertEquals("One piece", repository.findById(1L).get().getTitle());
 	}
 }
