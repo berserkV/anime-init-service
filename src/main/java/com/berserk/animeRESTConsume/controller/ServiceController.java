@@ -27,7 +27,7 @@ public class ServiceController {
 	
 	@Autowired
 	public ServiceController(@Qualifier("animeService") AnimeService animeService,
-			@Qualifier("resTemplate") RestTemplate restTemplate) {
+			@Qualifier("restTemplate") RestTemplate restTemplate) {
 		this.animeService = animeService;
 		this.restTemplate = restTemplate;
 	}
