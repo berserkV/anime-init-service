@@ -1,10 +1,17 @@
 package com.berserk.animeRESTConsume.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.ArgumentMatchers.anyString;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 
+import com.berserk.animeRESTConsume.error.RestExceptionHandler;
+import com.berserk.animeRESTConsume.model.Anime;
 import com.berserk.animeRESTConsume.service.AnimeService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,6 +36,7 @@ import com.berserk.animeRESTConsume.service.AnimeService;
 public class ServiceControllerTest {
 	
 	private MockMvc mockMvc;
+	private List<Anime> myAnimes;
 	
 	@InjectMocks
 	private ServiceController serviceController;
@@ -40,33 +50,48 @@ public class ServiceControllerTest {
 		serviceController = new ServiceController(animeService, new RestTemplate());
 		mockMvc = MockMvcBuilders
                 .standaloneSetup(serviceController)
+                .setControllerAdvice(new RestExceptionHandler())
                 .build();
+		myAnimes = new ArrayList<>(
+				Arrays.asList(new Anime(
+						1L, 
+						null, 
+						"TV", 
+						"One piece", 
+						null, 
+						null, 
+						null, 
+						958, 
+						new ArrayList<>())));
 		Mockito.reset(animeService);
 	}
 
 	@Test
-	public void givenJson_whenProcessJson_thenExpectOk() throws Exception {
+	public void givenJson_whenProcessJson_thenExpectOkAndSizeEquals1AndTitleEqualsOnePiece() throws Exception {
 		final String RESOURCE_LOCATION = "/init/animelist";
-		Mockito.when(animeService.processJson(anyString())).thenReturn(true);
+		Mockito.when(animeService.processJson(anyString())).thenReturn(myAnimes);
 
 		mockMvc
 		.perform(
 				get(RESOURCE_LOCATION)
 				.accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(status().isOk());
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$", hasSize(1)))
+		.andExpect(jsonPath("$[0].title", is("One piece")));
 	}
 	
 	@Test
-	public void givenJson_whenProcessJson_thenExpectFalse() throws Exception {
+	public void givenBadFormatJson_whenProcessJson_thenExpectException() throws Exception {
 		final String RESOURCE_LOCATION = "/init/animelist";
-		Mockito.when(animeService.processJson(anyString())).thenReturn(false);
+		Mockito.when(animeService.processJson(anyString())).thenThrow(
+				new IOException("Cannot deserialize json"));
 
 		mockMvc
 		.perform(
 				get(RESOURCE_LOCATION)
 				.accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("false"));
+		.andExpect(status().isInternalServerError());
 	}
 }
