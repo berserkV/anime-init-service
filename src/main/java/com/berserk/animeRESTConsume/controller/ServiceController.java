@@ -35,7 +35,9 @@ public class ServiceController {
 	@GetMapping("/animelist")
 	public List<Anime> getAnimeFromAPI() throws IOException {
 		LOGGER.info("Accesing to /api/animelist GET");
-		String myAnimeJson = restTemplate.getForObject(URL, String.class); 
-		return animeService.processJson(myAnimeJson);
+		String myAnimeJson = restTemplate.getForObject(URL, String.class);
+		List<Anime> myAnimes = animeService.processJson(myAnimeJson);
+		animeService.save(myAnimes);
+		return myAnimes;
 	}
 }
