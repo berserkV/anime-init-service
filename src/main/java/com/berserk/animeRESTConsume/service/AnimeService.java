@@ -60,6 +60,6 @@ public class AnimeService {
 		//========================================================
 		LOGGER.info("Persisting: " + myAnimes.size() + " animes");
 		//========================================================
-		myAnimes.stream().map(animeRepository::save);
+		myAnimes.stream().forEach(animeRepository::save);
 	}
 }

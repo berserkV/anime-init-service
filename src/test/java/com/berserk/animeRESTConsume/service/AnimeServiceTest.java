@@ -32,11 +32,23 @@ public class AnimeServiceTest {
 	
 	private AnimeService service;
 	private String json;
+	private List<Anime> myAnimes;
 
 	@Before
 	public void setUp() {
 		repository = Mockito.mock(AnimeRepository.class);
 		service = PowerMockito.spy(new AnimeService(repository));
+		myAnimes = new ArrayList<>(
+				Arrays.asList(new Anime(
+						1L, 
+						null, 
+						"TV", 
+						"One piece", 
+						null, 
+						null, 
+						null, 
+						958, 
+						new ArrayList<>())));
 		json = "{\r\n" + 
 				"    \"data\": [\r\n" + 
 				"        {\r\n" + 
@@ -63,17 +75,7 @@ public class AnimeServiceTest {
 	@Test
 	public void givenJson_whenProcessJson_thenReturnAnimeList() throws Exception {
 		PowerMockito.when(service, "readValueFromJson", json).thenReturn(
-				new ListContainer<>(new ArrayList<>(
-						Arrays.asList(new Anime(
-								1L, 
-								null, 
-								"TV", 
-								"One piece", 
-								null, 
-								null, 
-								null, 
-								958, 
-								new ArrayList<>())))));
+				new ListContainer<>(myAnimes));
 		
 		assertEquals("One piece", service.processJson(json).get(0).getTitle());
 	}
@@ -90,18 +92,6 @@ public class AnimeServiceTest {
 	
 	@Test
 	public void givenAnimeList_whenSave_verifyIfListWasPersisted() {
-		List<Anime> myAnimes = new ArrayList<>(
-				Arrays.asList(new Anime(
-						1L, 
-						null, 
-						"TV", 
-						"One piece", 
-						null, 
-						null, 
-						null, 
-						958, 
-						new ArrayList<>())));
-		
 		when(repository.save(ArgumentMatchers.any(Anime.class))).thenReturn(myAnimes.get(0));
 		when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(myAnimes.get(0)));
 		
