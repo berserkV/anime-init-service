@@ -17,8 +17,8 @@ import com.berserk.animeRESTConsume.service.AnimeService;
 @RestController
 @RequestMapping("/init")
 public class ServiceController {
-	AnimeService animeService;
-	RestTemplate restTemplate;
+	private final AnimeService animeService;
+	private final RestTemplate restTemplate;
 	
 	private static final Logger LOGGER = Logger.getLogger(ServiceController.class);
 	private static final String URL =
