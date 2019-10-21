@@ -62,4 +62,11 @@ public class AnimeService {
 		//========================================================
 		myAnimes.stream().forEach(animeRepository::save);
 	}
+	
+	public void saveAll(List<Anime> animes) {
+		//======================================================
+		LOGGER.info("Persisting: " + animes.size() + " animes");
+		//======================================================
+		animeRepository.saveAll(animes);
+	}
 }
