@@ -40,4 +40,13 @@ public class ServiceController {
 		animeService.save(myAnimes);
 		return myAnimes;
 	}
+	
+	@GetMapping("/save")
+	public List<Anime> saveAnimes() throws IOException {
+		LOGGER.info("Accesing to /api/save GET");
+		String myAnimeJson = restTemplate.getForObject(URL, String.class);
+		List<Anime> myAnimes = animeService.processJson(myAnimeJson);
+		animeService.saveAll(myAnimes);
+		return myAnimes;
+	}
 }
