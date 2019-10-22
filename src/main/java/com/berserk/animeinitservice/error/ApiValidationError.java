@@ -1,4 +1,4 @@
-package com.berserk.animeRESTConsume.error;
+package com.berserk.animeinitservice.error;
 
 class ApiValidationError extends ApiSubError {
 	private String object;

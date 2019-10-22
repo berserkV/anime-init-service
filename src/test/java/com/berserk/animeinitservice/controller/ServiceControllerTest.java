@@ -1,4 +1,4 @@
-package com.berserk.animeRESTConsume.controller;
+package com.berserk.animeinitservice.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
@@ -27,9 +27,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 
-import com.berserk.animeRESTConsume.error.RestExceptionHandler;
-import com.berserk.animeRESTConsume.model.Anime;
-import com.berserk.animeRESTConsume.service.AnimeService;
+import com.berserk.animeinitservice.controller.ServiceController;
+import com.berserk.animeinitservice.error.RestExceptionHandler;
+import com.berserk.animeinitservice.model.Anime;
+import com.berserk.animeinitservice.service.AnimeService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

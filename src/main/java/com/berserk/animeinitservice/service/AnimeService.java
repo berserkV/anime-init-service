@@ -1,4 +1,4 @@
-package com.berserk.animeRESTConsume.service;
+package com.berserk.animeinitservice.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,21 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.berserk.animeRESTConsume.model.Anime;
-import com.berserk.animeRESTConsume.model.ListContainer;
-import com.berserk.animeRESTConsume.repository.AnimeRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.berserk.animeinitservice.model.Anime;
+import com.berserk.animeinitservice.model.AnimeContainer;
+import com.berserk.animeinitservice.repository.AnimeRepository;
+import com.berserk.animeinitservice.util.Definitions;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Service("animeService")
+@Service(Definitions.ANIME_SERVICE_BEAN)
 public class AnimeService {
 	AnimeRepository animeRepository;
 	
 	private static final Logger LOGGER = Logger.getLogger(AnimeService.class);
 
 	@Autowired
-	public AnimeService(@Qualifier("animeRepository") AnimeRepository animeRepository) {
+	public AnimeService(@Qualifier(Definitions.ANIME_REPOSITORY_BEAN) AnimeRepository animeRepository) {
 		this.animeRepository = animeRepository;
 	}
 
@@ -31,9 +31,9 @@ public class AnimeService {
 		//=============================
 		LOGGER.info("Processing json");
 		//=============================
-		ListContainer<Anime> myAnimeContainer = null;
+		AnimeContainer myAnimeContainer = null;
 		myAnimeContainer = readValueFromJson(animeJson);
-		List<Anime> myAnimes = myAnimeContainer.getMyList();
+		List<Anime> myAnimes = myAnimeContainer.getAnimes();
 		if (myAnimes == null) { 
 			//==============================================
 			LOGGER.error("Anime list null");
@@ -43,15 +43,15 @@ public class AnimeService {
 		return myAnimes;
 	}
 
-	private ListContainer<Anime> readValueFromJson(String animeJson) {
-		ListContainer<Anime> myAnimeContainer;
+	private AnimeContainer readValueFromJson(String animeJson) {
+		AnimeContainer myAnimeContainer;
 		ObjectMapper objectMapper = new ObjectMapper()
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		try {
-			myAnimeContainer = objectMapper.readValue(animeJson, new TypeReference<ListContainer<Anime>>() {});
+			myAnimeContainer = objectMapper.readValue(animeJson, AnimeContainer.class);
 		} catch (Exception e) {
 			e.printStackTrace();
-			myAnimeContainer = new ListContainer<>(new ArrayList<>());
+			myAnimeContainer = new AnimeContainer(new ArrayList<>());
 		}
 		return myAnimeContainer;
 	}
