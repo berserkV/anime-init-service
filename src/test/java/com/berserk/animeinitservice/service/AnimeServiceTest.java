@@ -1,4 +1,4 @@
-package com.berserk.animeRESTConsume.service;
+package com.berserk.animeinitservice.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,9 +19,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.berserk.animeRESTConsume.model.Anime;
-import com.berserk.animeRESTConsume.model.ListContainer;
-import com.berserk.animeRESTConsume.repository.AnimeRepository;
+import com.berserk.animeinitservice.model.Anime;
+import com.berserk.animeinitservice.model.AnimeContainer;
+import com.berserk.animeinitservice.repository.AnimeRepository;
+import com.berserk.animeinitservice.service.AnimeService;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AnimeService.class)
@@ -75,7 +76,7 @@ public class AnimeServiceTest {
 	@Test
 	public void givenJson_whenProcessJson_thenReturnAnimeList() throws Exception {
 		PowerMockito.when(service, "readValueFromJson", json).thenReturn(
-				new ListContainer<>(myAnimes));
+				new AnimeContainer(myAnimes));
 		
 		assertEquals("One piece", service.processJson(json).get(0).getTitle());
 	}
@@ -83,7 +84,7 @@ public class AnimeServiceTest {
 	@Test
 	public void givenJson_whenProcessJson_thenReturnEmptyList() throws Exception {
 		PowerMockito.when(service, "readValueFromJson", json)
-				.thenReturn(new ListContainer<>(new ArrayList<>()));
+				.thenReturn(new AnimeContainer(new ArrayList<>()));
 		
 		List<Anime> myActuals = service.processJson(json);
 		

@@ -1,4 +1,4 @@
-package com.berserk.animeRESTConsume.model;
+package com.berserk.animeinitservice.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Anime {
 	@Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	@ElementCollection
 	@CollectionTable(name = "sources", joinColumns = @JoinColumn(name = "id"))
 	@Column(name="source")
@@ -42,9 +42,9 @@ public class Anime {
 	private List<String> synonyms;
 
 	public Anime() {
-		
+
 	}
-	
+
 	public Anime(Long id, ArrayList<String> sources, String type, String title, String picture,
 			ArrayList<String> relations, String thumbnail, Integer episodes, ArrayList<String> synonyms) {
 		this.id = id;
@@ -57,7 +57,7 @@ public class Anime {
 		this.episodes = episodes;
 		this.synonyms = synonyms;
 	}
-	
+
 	public Anime(ArrayList<String> sources, String type, String title, String picture, ArrayList<String> relations,
 			String thumbnail, Integer episodes, ArrayList<String> synonyms) {
 		this(null, sources, type, title, picture, relations, thumbnail, episodes, synonyms);
