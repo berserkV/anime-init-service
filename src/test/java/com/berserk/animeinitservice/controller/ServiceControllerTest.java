@@ -31,6 +31,7 @@ import com.berserk.animeinitservice.controller.ServiceController;
 import com.berserk.animeinitservice.error.RestExceptionHandler;
 import com.berserk.animeinitservice.model.Anime;
 import com.berserk.animeinitservice.service.AnimeService;
+import com.berserk.animeinitservice.util.URL;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -69,7 +70,7 @@ public class ServiceControllerTest {
 
 	@Test
 	public void givenJson_whenProcessJson_thenExpectOkAndSizeEquals1AndTitleEqualsOnePiece() throws Exception {
-		final String RESOURCE_LOCATION = "/init/animelist";
+		final String RESOURCE_LOCATION = URL.SAVE_EXTERNAL;
 		Mockito.when(animeService.processJson(anyString())).thenReturn(myAnimes);
 
 		mockMvc
@@ -84,7 +85,7 @@ public class ServiceControllerTest {
 	
 	@Test
 	public void givenBadFormatJson_whenProcessJson_thenExpectException() throws Exception {
-		final String RESOURCE_LOCATION = "/init/animelist";
+		final String RESOURCE_LOCATION = URL.SAVE_EXTERNAL;
 		Mockito.when(animeService.processJson(anyString())).thenThrow(
 				new IOException("Cannot deserialize json"));
 
