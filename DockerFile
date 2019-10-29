@@ -10,6 +10,6 @@ RUN mkdir -p /app/
 
 RUN mkdir -p /app/logs/
 
-ADD target/animeRESTConsume-0.0.1-SNAPSHOT.jar /app/animeRESTConsume-0.0.1-SNAPSHOT.jar
+ADD target/anime-init-service-0.0.1-SNAPSHOT.jar /app/anime-init-service-0.0.1-SNAPSHOT.jar
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker", "-jar", "/app/animeRESTConsume-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker", "-jar", "/app/anime-init-service-0.0.1-SNAPSHOT.jar"]
